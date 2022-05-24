@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 numpy = "*"
 packet = "*"
+bitarray = "*"
+colorama = "*"
 
 [dev-packages]
 
