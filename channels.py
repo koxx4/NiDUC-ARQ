@@ -1,28 +1,40 @@
+from bitarray import bitarray
 import komm
 import random
+
+from util import bits_from_bytes
 
 
 def binary_symmetric(probability: int):
     return komm.BinarySymmetricChannel(probability)
 
 
-def gilbert_elliot(reverse_good: float, reverse_bad: float, error_chance: float):
-    def channel(input):
+def gilbert_elliot(reverseGood: float, reverseBad: float, errorChance: float):
+    def channel(input) -> list:
         output = []
-        is_bad = False
+        isBad = False
 
         for i in input:
-            if is_bad:
-                if random.random() < error_chance:
+            if isBad:
+                if random.random() < errorChance:
                     output.append((i + 1) % 2)
                 else:
                     output.append(i)
-                is_bad = random.random() < reverse_good
+                isBad = random.random() < reverseGood
                 continue
 
             output.append(i)
-            is_bad = random.random() < reverse_bad
+            isBad = random.random() < reverseBad
 
         return output
 
     return channel
+
+def send_through_channel(data: bytes | bytearray, channel) -> bytes:
+
+    sent = channel(bits_from_bytes(data))
+
+    if not isinstance(sent, list):
+        sent = sent.tolist()
+
+    return bitarray(sent).tobytes()
