@@ -5,10 +5,12 @@ from bitarray.util import ba2int
 from bitarray.util import int2ba
 from colorama import Fore
 
+from util import bits_from_bytes
+
 
 def crc_interactive(data: bitarray, polynomial: bitarray) -> int:
 
-    if len(data) is 0 or len(polynomial) <= 1:
+    if len(data) == 0 or len(polynomial) <= 1:
         return 0
 
      # this is made on purpose -> we get copy
@@ -31,7 +33,7 @@ def crc_interactive(data: bitarray, polynomial: bitarray) -> int:
     currentDataBitIndex = 0
     while(dataCopy[:dataWidthWithoutRemainder].any()):
 
-        while dataCopy[currentDataBitIndex] is 0:
+        while dataCopy[currentDataBitIndex] == 0:
             polynomial >>= 1
             currentDataBitIndex += 1
 
@@ -55,9 +57,9 @@ def crc_interactive(data: bitarray, polynomial: bitarray) -> int:
     return crc
 
 
-def is_valid_crc_interactive(data: bitarray, polynomial: bitarray, crc: bitarray) -> bool:
+def validate_crc_interactive(data: bitarray, polynomial: bitarray, crc: bitarray) -> bool:
 
-    if len(data) is 0 or len(polynomial) <= 1:
+    if len(data) == 0 or len(polynomial) <= 1:
         return 0
 
     # this is made on purpose -> we get copy
@@ -104,7 +106,7 @@ def is_valid_crc_interactive(data: bitarray, polynomial: bitarray, crc: bitarray
 
 def crc(data: bitarray, polynomial: bitarray) -> int:
 
-    if len(data) is 0 or len(polynomial) <= 1:
+    if len(data) == 0 or len(polynomial) <= 1:
         return 0
 
     # this is made on purpose -> we get copy
@@ -122,7 +124,7 @@ def crc(data: bitarray, polynomial: bitarray) -> int:
     currentDataBitIndex = 0
     while(dataCopy[:dataWidthWithoutRemainder].any()):
 
-        while dataCopy[currentDataBitIndex] is 0:
+        while dataCopy[currentDataBitIndex] == 0:
             polynomial >>= 1
             currentDataBitIndex += 1
 
@@ -133,9 +135,9 @@ def crc(data: bitarray, polynomial: bitarray) -> int:
     return ba2int(dataCopy[dataWidthWithoutRemainder:])
 
 
-def is_valid_crc(data: bitarray, polynomial: bitarray, crc: int) -> bool:
+def validate_crc(data: bitarray, polynomial: bitarray, crc: int) -> bool:
 
-    if len(data) is 0 or len(polynomial) <= 1:
+    if len(data) == 0 or len(polynomial) <= 1:
         return 0
 
     # this is made on purpose -> we get copy
@@ -162,3 +164,39 @@ def is_valid_crc(data: bitarray, polynomial: bitarray, crc: int) -> bool:
 
     remainder = ba2int(dataCopy[dataWidthWithoutRemainder:])
     return remainder == 0
+
+
+def encode_crc(data: bytes | bytearray, polynomial: str) -> bytes:
+    bits = bits_from_bytes(data)
+    polyBits = bitarray(polynomial)
+
+    crcBytes = int2ba(crc(bits, polynomial), len(polynomial) - 1).tobytes()
+
+    encoded = bytearray(bits.tobytes())
+    encoded.extend(crcBytes)
+
+    return encoded
+
+
+def decode_crc(data: bytes | bytearray, polynomial: str) -> bytes:
+    bits = bits_from_bytes(data)
+    polyBits = bitarray(polynomial)
+
+    for i in range(0, len(polyBits)):
+        bits.pop()
+
+    return bits.tobytes()
+
+
+def has_valid_crc(data: bytes | bytearray, polynomial: str) -> bool:
+    dataBits = bits_from_bytes(data)
+    polyBits = bitarray(polynomial)
+
+    crcBits = bits_from_bytes(data[len(data) - (int)(len(polynomial) / 8) - 1:])
+    
+    dataBits = dataBits[:len(dataBits) - len(crcBits)]
+
+    crcBits = crcBits[:len(polynomial) - 1]
+
+
+    return validate_crc(dataBits, polyBits, ba2int(crcBits))

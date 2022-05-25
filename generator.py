@@ -3,24 +3,24 @@ from bitarray import bitarray
 from lorem_text import lorem
 
 
-def randomAsciiWords(count: int) -> bytes:
-    return bytes(lorem.words(count))
+def random_ascii_words(count: int) -> bytes:
+    return bytes(lorem.words(count), 'ascii')
 
 
-def randomAsciiSentences(count: int) -> bytes:
-    return bytes(lorem.sentence(count))
+def random_ascii_sentences(count: int) -> bytes:
+    return bytes(lorem.sentence(count), 'ascii')
 
 
 # Paragraph consist of 2 to 4 sentences
-def randomAsciiParagraph(count: int) -> bytes:
-    return bytes(lorem.paragraph(count))
+def random_ascii_paragraph(count: int) -> bytes:
+    return bytes(lorem.paragraph(count), 'ascii')
 
 
-def randomBytes(count: int) -> bytes:
-    return random.randbytes()
+def random_bytes(count: int) -> bytes:
+    return random.randbytes(count)
 
 
-def randomBits(count: int) -> bitarray:
+def random_bits(count: int) -> bitarray:
     bits: bitarray = bitarray()
 
     for i in range(0, count):

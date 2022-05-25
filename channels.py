@@ -1,5 +1,8 @@
+from bitarray import bitarray
 import komm
 import random
+
+from util import bits_from_bytes
 
 
 def binary_symmetric(probability: int):
@@ -26,3 +29,12 @@ def gilbert_elliot(reverseGood: float, reverseBad: float, errorChance: float):
         return output
 
     return channel
+
+def send_through_channel(data: bytes | bytearray, channel) -> bytes:
+
+    sent = channel(bits_from_bytes(data))
+
+    if not isinstance(sent, list):
+        sent = sent.tolist()
+
+    return bitarray(sent).tobytes()
