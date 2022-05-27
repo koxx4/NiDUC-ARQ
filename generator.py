@@ -27,3 +27,25 @@ def random_bits(count: int) -> bitarray:
         bits.append(random.randint(0, 1))
 
     return bits
+
+
+def random_polynomials(totalAmount: int, stepLen=1, startingLen=2) -> list:
+    polynomials = []
+    currentPolyLen = startingLen
+
+    while totalAmount > 0:
+
+        for i in range(0, stepLen):
+
+            generatedPoly = random_bits(currentPolyLen)
+
+            # if generated polynomial turned out to be all 0's - repeat
+            while generatedPoly[0] ==0 or generatedPoly.any() == False:
+                generatedPoly = random_bits(currentPolyLen)
+
+            polynomials.append(generatedPoly.to01())
+            totalAmount -= 1
+
+        currentPolyLen += 1
+
+    return polynomials
