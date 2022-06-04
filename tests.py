@@ -52,7 +52,7 @@ def testsCRC(channel, data, polynomials, retries: int, channelDescription: str):
         result = crcErrorDetectionAccuracy(
             channel, data, polynomial, retries)
 
-        print('CRC - error detection, channel: {}\nPolynomial: {}, Retries: {}\nRate: {:.2%}'.format(
+        print('CRC - error detection, channel: {}\nPolynomial: {}, Retries: {}\nRate: {:.3%}'.format(
             channelDescription, polynomial, retries, result
         ))
 
@@ -61,7 +61,7 @@ def testsParityBit(channel, data, retries: int, channelDescription: str):
 
     result = parityErrorDetectionAccuracy(channel, data, retries)
 
-    print('Parity bit - error detection, channel: {}\nRetries: {}\nRate: {:.2%}'.format(
+    print('Parity bit - error detection, channel: {}\nRetries: {}\nRate: {:.3%}'.format(
         channelDescription, retries, result
     ))
 
@@ -69,6 +69,6 @@ def testsRepetition(channel, data, repCount: int, retries: int, channelDescripti
 
     result = repetitionErrorDetectionAccuracy(channel, data, repCount, retries)
 
-    print('Repetition code - error detection, repCount: {}, channel: {}\nRetries: {}\nRate: {:.2%}'.format(
+    print('Repetition code - error detection, repCount: {}, channel: {}\nRetries: {}\nRate: {:.3%}'.format(
         repCount, channelDescription, retries, result
     ))

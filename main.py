@@ -1,8 +1,22 @@
-from channels import binary_symmetric, send_through_channel
+import sys
+
+from channels import binary_symmetric
 from channels import gilbert_elliot
 from generator import random_ascii_words, random_polynomials
 from tests import *
 
+#args: 
+# -crc|parity|repetition -<polynomial>|random|<repCount> -ge|bs (channels) -<retries> -bytes|words|pars|sent -<data_size>
+
+# codeType = sys.argv[1]
+
+# if(codeType == 'crc'):
+#     polynomial = sys.argv[2]
+
+    
+# elif(codeType =='parity')
+
+# elif(codeType == 'repetition'):
 
 data = random_ascii_words(100)
 crcPolynomials = random_polynomials(
@@ -10,7 +24,7 @@ crcPolynomials = random_polynomials(
 
 bsChannel = binary_symmetric(0.1)
 geChannel = gilbert_elliot(0.75, 0.2, 0.15)
-retries = 100
+retries = 1000
 
 #-----------CRC-----------------
 testsCRC(bsChannel, data, crcPolynomials, retries,

@@ -19,7 +19,7 @@ def validate_encoded_repetition(encodedData: bytes, repCount: int = 2) -> bool:
     bits = bits_from_bytes(encodedData)
 
     for i in range(0, len(bits), repCount):
-        for j in range(0, repCount):
+        for j in range(i, i + repCount):
             if(bits[i] != bits[j]):
                 return False
     
