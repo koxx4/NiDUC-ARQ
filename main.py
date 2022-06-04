@@ -1,51 +1,39 @@
-from bitarray import bitarray
-from crc import encode_crc, has_valid_crc
-from channels import binary_symmetric, send_through_channel
+import sys
+
+from channels import binary_symmetric
 from channels import gilbert_elliot
-from generator import random_ascii_words
-from parity import encode_parity_bit, validate_parity_encoded_data
+from generator import random_ascii_words, random_polynomials
+from tests import *
 
-
-data = random_ascii_words(10)
-
-polynomial = '1011'
-
-parityEncodedData = encode_parity_bit(data)
-crcEncodedData = encode_crc(data, polynomial)
+data = random_ascii_words(1)
+crcPolynomials = random_polynomials(
+    totalAmount=10 * 3, stepLen=3, startingLen=3)
 
 bsChannel = binary_symmetric(0.1)
 geChannel = gilbert_elliot(0.75, 0.2, 0.15)
+retries = 1000
 
-dataAfterSendBSCrc = send_through_channel(crcEncodedData, bsChannel)
-dataAfterSendGECrc = send_through_channel(crcEncodedData, geChannel)
-dataAfterSendBSParity = send_through_channel(parityEncodedData, bsChannel)
-dataAfterSendGEParity = send_through_channel(parityEncodedData, geChannel)
+#-----------CRC-----------------
+testsCRC(bsChannel, data, crcPolynomials, retries,
+         'Binary symmetric {}'.format(0.1))
+testsCRC(geChannel, data, crcPolynomials, retries,
+         'Gilbert-Elliot {} {} {}'.format(0.75, 0.2, 0.15))
 
-print('Data before send: {}'.format(data))
+#-----------PARITY-----------------
+testsParityBit(bsChannel, data, retries, 'Binary symmetric {}'.format(0.1))
+testsParityBit(geChannel, data, retries,
+               'Gilbert-Elliot {} {} {}'.format(0.75, 0.2, 0.15))
 
-print('CRC encoded data before send: {}'.format(crcEncodedData))
+#-----------REPETITION-------------
+testsRepetition(bsChannel, data, 2, retries, 'Binary symmetric {}'.format(0.1))
+testsRepetition(geChannel, data, 2, retries,
+               'Gilbert-Elliot {} {} {}'.format(0.75, 0.2, 0.15))
 
-print('Parity encoded data before send: {}'.format(parityEncodedData))
+testsRepetition(bsChannel, data, 3, retries, 'Binary symmetric {}'.format(0.1))
+testsRepetition(geChannel, data, 3, retries,
+               'Gilbert-Elliot {} {} {}'.format(0.75, 0.2, 0.15))
 
-print('CRC encoded data after BS: {}'.format(dataAfterSendBSCrc))
+testsRepetition(bsChannel, data, 4, retries, 'Binary symmetric {}'.format(0.1))
+testsRepetition(geChannel, data, 4, retries,
+               'Gilbert-Elliot {} {} {}'.format(0.75, 0.2, 0.15))
 
-print('CRC encoded data after GE: {}'.format(dataAfterSendGECrc))
-
-print('Parity encoded data after BS: {}'.format(dataAfterSendBSParity))
-
-print('Parity encoded data after GE: {}'.format(dataAfterSendGEParity))
-
-print('Sanity check - data before crc check: {}'.format(
-    has_valid_crc(crcEncodedData, polynomial)))
-
-print('CRC data check after BS: {}'.format(
-    has_valid_crc(dataAfterSendBSCrc, polynomial)))
-
-print('CRC data check after GE: {}'.format(
-    has_valid_crc(dataAfterSendGECrc, polynomial)))
-
-print('Parity data check after BS: {}'.format(
-    validate_parity_encoded_data(dataAfterSendBSParity)))
-
-print('Parity data check after GE: {}'.format(
-    validate_parity_encoded_data(dataAfterSendGEParity)))
