@@ -69,6 +69,6 @@ def testsRepetition(channel, data, repCount: int, retries: int, channelDescripti
 
     result = repetitionErrorDetectionAccuracy(channel, data, repCount, retries)
 
-    print('Parity bit - error detection, channel: {}\nRetries: {}\nRate: {:.2%}'.format(
-        channelDescription, retries, result
+    print('Repetition code - error detection, repCount: {}, channel: {}\nRetries: {}\nRate: {:.2%}'.format(
+        repCount, channelDescription, retries, result
     ))

@@ -10,7 +10,7 @@ crcPolynomials = random_polynomials(
 
 bsChannel = binary_symmetric(0.1)
 geChannel = gilbert_elliot(0.75, 0.2, 0.15)
-retries = 1000
+retries = 100
 
 #-----------CRC-----------------
 testsCRC(bsChannel, data, crcPolynomials, retries,
