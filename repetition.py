@@ -1,3 +1,4 @@
+from re import A
 from bitarray import bitarray
 from util import bits_from_bytes
 
@@ -11,12 +12,17 @@ def encode_repetition(data: bytes, repCount: int = 2) -> bytes:
     for bit in bits:
         for j in range(0, repCount):
             bitsEncoded.append(bit)
+
+    assert len(bitsEncoded) == encodedSize
     
     return bitsEncoded.tobytes()
     
 
 def validate_encoded_repetition(encodedData: bytes, repCount: int = 2) -> bool:
     bits = bits_from_bytes(encodedData)
+
+    if(len(bits) % repCount != 0):
+        return False
 
     for i in range(0, len(bits), repCount):
         for j in range(i, i + repCount):

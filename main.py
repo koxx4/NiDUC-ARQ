@@ -5,20 +5,7 @@ from channels import gilbert_elliot
 from generator import random_ascii_words, random_polynomials
 from tests import *
 
-#args: 
-# -crc|parity|repetition -<polynomial>|random|<repCount> -ge|bs (channels) -<retries> -bytes|words|pars|sent -<data_size>
-
-# codeType = sys.argv[1]
-
-# if(codeType == 'crc'):
-#     polynomial = sys.argv[2]
-
-    
-# elif(codeType =='parity')
-
-# elif(codeType == 'repetition'):
-
-data = random_ascii_words(100)
+data = random_ascii_words(1)
 crcPolynomials = random_polynomials(
     totalAmount=10 * 3, stepLen=3, startingLen=3)
 
