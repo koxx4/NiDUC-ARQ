@@ -5,44 +5,65 @@ from repetition import encode_repetition, validate_encoded_repetition
 
 
 def crcErrorDetectionAccuracy(channel, data: bytes, polynomial: str, retries: int) -> float:
-    validMeasures = 0
+    errorsDetected = 0
     encodedData = encode_crc(data, polynomial)
+    realErrors = 0
+    
 
     for i in range(0, retries):
+        errorInThisRun = False
         sentData = send_through_channel(encodedData, channel)
         validationResult = has_valid_crc(sentData, polynomial)
 
-        if (encodedData != sentData and validationResult == False) or (encodedData == sentData and validationResult == True):
-            validMeasures += 1
+        if encodedData != sentData:
+            realErrors += 1
+            errorInThisRun = True
 
-    return validMeasures / retries
+        if (errorInThisRun and validationResult == False):
+            errorsDetected += 1
+
+    return errorsDetected / realErrors
 
 
 def parityErrorDetectionAccuracy(channel, data: bytes, retries: int) -> float:
-    validMeasures = 0
+    errorsDetected = 0
     encodedData = encode_parity_bit(data)
+    realErrors = 0
+    
 
     for i in range(0, retries):
+        errorInThisRun = False
         sentData = send_through_channel(encodedData, channel)
         validationResult = validate_parity_encoded_data(sentData)
 
-        if (encodedData != sentData and validationResult == False) or (encodedData == sentData and validationResult == True):
-            validMeasures += 1
+        if encodedData != sentData:
+            realErrors += 1
+            errorInThisRun = True
 
-    return validMeasures / retries
+        if (errorInThisRun and validationResult == False):
+            errorsDetected += 1
+
+    return errorsDetected / realErrors
 
 def repetitionErrorDetectionAccuracy(channel, data: bytes, repCount: int, retries: int) -> float:
-    validMeasures = 0
+    errorsDetected = 0
     encodedData = encode_repetition(data, repCount)
+    realErrors = 0
+    
 
     for i in range(0, retries):
+        errorInThisRun = False
         sentData = send_through_channel(encodedData, channel)
         validationResult = validate_encoded_repetition(sentData, repCount)
 
-        if (encodedData != sentData and validationResult == False) or (encodedData == sentData and validationResult == True):
-            validMeasures += 1
+        if encodedData != sentData:
+            realErrors += 1
+            errorInThisRun = True
 
-    return validMeasures / retries
+        if (errorInThisRun and validationResult == False):
+            errorsDetected += 1
+
+    return errorsDetected / realErrors
 
 
 def testsCRC(channel, data, polynomials, retries: int, channelDescription: str):
